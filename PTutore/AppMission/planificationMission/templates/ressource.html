@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>les ressources</title>
+    <!-- Link your CSS file -->
+
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Form styling */
+        #form-add-ressource, .edit-ressource-form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        form input[type="text"],
+        form input[type="number"],
+        form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* List styling */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Edit form visibility */
+        .edit-ressource-form {
+            display: none;
+        }
+
+        /* Delete link styling */
+        a[href*="delete_ressource"] {
+            color: #dc3545;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        a[href*="delete_ressource"]:hover {
+            text-decoration: underline;
+        }
+        /* Header styles */
+        header {
+            background-color: #333;
+            padding: 10px;
+            position: relative;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav1 ul1 {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav1 ul1 li1 {
+            margin: 0 15px;
+        }
+
+        nav1 ul1 li1 a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        nav ul1 li1 a:hover {
+            color: #ddd;
+        }
+/* Responsive navigation styles */
+        @media (max-width: 768px) {
+            nav1 ul1 {
+                display: none;
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                top: 50px;
+                width: 100%;
+                left: 0;
+                padding: 10px 0;
+                z-index: 1;
+            }
+
+            nav1 ul1 li1 {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            nav1 ul1.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: white;
+                font-size: 24px;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+   <header>
+        <div class="logo">Mission Manager</div>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+        <nav1>
+            <ul1>
+                <li1><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li1>
+                <li1><i class="fas fa-user"></i> {{user.nom}}</a></li1>
+                <li1><a href="{% url 'Authentification:logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li1>
+                <li1><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li1>
+            </ul1>
+        </nav1>
+    </header>
+
+
+    <h1>Ressources pour la tâche: {{ tache.titre }}</h1>
+
+    <button id="btn-add-ressource">Ajouter Ressource</button>
+    <div id="form-add-ressource" style="display: none;">
+        <h2>Nouvelle Ressource</h2>
+        <form id="add-ressource-form" method="get">
+            {{ ressource_form.as_p }}
+            <button type="submit" name="add_ressource">Enregistrer</button>
+        </form>
+    </div>
+
+    <ul>
+        {% for ressource in ressources %}
+            <li>
+                <h3>{{ ressource.titre }}</h3>
+                <p>{{ ressource.description }}</p>
+                <p>Prix: {{ ressource.prix }}</p>
+                <button class="btn-edit-ressource" data-id="{{ ressource.id }}">Modifier</button>
+                <a href="?delete_ressource=&ressource_id={{ ressource.id }}">Supprimer</a>
+
+                <div class="edit-ressource-form" data-id="{{ ressource.id }}">
+                    <h2>Modifier Ressource</h2>
+                    <form method="get">
+                        <input type="hidden" name="ressource_id" value="{{ ressource.id }}">
+                        <label for="titre">Titre:</label>
+                        <input type="text" id="titre" name="titre" value="{{ ressource.titre }}" required>
+                        <label for="prix">Prix:</label>
+                        <input type="text" id="prix" name="prix" value="{{ ressource.prix }}" required>
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" required>{{ ressource.description }}</textarea>
+                        <button type="submit" name="edit_ressource">Enregistrer</button>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+                function toggleMenu() {
+            var nav = document.querySelector('nav1 ul1');
+            nav.classList.toggle('show');
+        }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle the add resource form
+        document.getElementById('btn-add-ressource').addEventListener('click', function() {
+            var form = document.getElementById('form-add-ressource');
+            form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+        });
+
+        // Toggle the edit resource forms
+        document.querySelectorAll('.btn-edit-ressource').forEach(button => {
+            button.addEventListener('click', function() {
+                var editForm = document.querySelector(`.edit-ressource-form[data-id="${this.dataset.id}"]`);
+                if (editForm) {
+                    editForm.style.display = (editForm.style.display === 'none' || editForm.style.display === '') ? 'block' : 'none';
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Objectifs</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .objectifs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .objectif-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            width: 200px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .objectif-card p {
+            margin: 0 0 10px;
+            color: #555;
+        }
+
+        .objectif-card button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+            text-align: center;s
+        }
+
+        .objectif-card button a {
+      color: #fff;
+            text-decoration: none;
+        }
+
+        .objectif-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-section input,
+        .form-section textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .form-section button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .form-section button:hover {
+            background-color: #0056b3;
+        }
+
+        .add-objectif-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            width: 200px;
+            height: 100px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: background-color 0.2s;
+        }
+
+        .add-objectif-button:hover {
+          background-color: #e6e6e6;
+        }
+
+        .add-objectif-button span {
+                     font-size: 24px;
+            color: #007bff;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #333;
+            padding: 10px;
+            position: relative;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        nav ul li a:hover {
+            color: #ddd;
+        }
+        /* Responsive navigation styles */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                top: 50px;
+                width: 100%;
+                left: 0;
+                padding: 10px 0;
+                z-index: 1;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: white;
+                font-size: 24px;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+    <script>
+                function toggleMenu() {
+            var nav = document.querySelector('nav ul');
+            nav.classList.toggle('show');
+        }
+        function toggleForm(formId) {
+            var form = document.getElementById(formId);
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        function submitForm(formId, actionUrl) {
+            var form = document.getElementById(formId);
+            form.action = actionUrl;
+            form.submit();
+        }
+    </script>
+</head>
+<body>
+
+
+   <header>
+        <div class="logo">Mission Manager</div>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#"><i class="fas fa-user"></i> {{user.nom}}</a></li>
+                <li><a href="{% url 'Authentification:logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                <li><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+
+
+    <h2>Objectifs</h2>
+    <div class="objectifs-container">
+        {% for objectif in objectifs %}
+        <div class="objectif-card">
+            <p>{{ objectif.titre }}</p>
+            <p>{{ objectif.description }}</p>
+            <button onclick="toggleForm('editObjectifForm{{ objectif.id }}')">Modifier</button>
+            <form id="editObjectifForm{{ objectif.id }}" class="form-section" method="post" action="{% url 'planificationMission:objectif' mission.id %}" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" name="objectif_id" value="{{ objectif.id }}">
+                <input type="hidden" name="update_objectif" value="true">
+                <label for="titre{{ objectif.id }}">Titre:</label>
+                <input type="text" name="titre" id="titre{{ objectif.id }}" value="{{ objectif.titre }}">
+                <label for="description{{ objectif.id }}">Description:</label>
+                <textarea name="description" id="description{{ objectif.id }}">{{ objectif.description }}</textarea>
+                <button type="submit">Enregistrer</button>
+            </form>
+            <form method="post" action="{% url 'planificationMission:objectif' mission.id %}" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="objectif_id" value="{{ objectif.id }}">
+                <input type="hidden" name="delete_objectif" value="true">
+                <button type="submit">Supprimer</button>
+            </form>
+        </div>
+        {% endfor %}
+        <button class="add-objectif-button" onclick="toggleForm('addObjectifForm')"><span>+</span></button>
+    </div>
+    <form id="addObjectifForm" class="form-section" method="post" action="{% url 'planificationMission:objectif' mission.id %}" style="display: none;">
+        {% csrf_token %}
+        {{ objectif_form.as_p }}
+        <input type="hidden" name="add_objectif" value="true">
+        <button type="submit">Ajouter</button>
+    </form>
+</body>
+</html>

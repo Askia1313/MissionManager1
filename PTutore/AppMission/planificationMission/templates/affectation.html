@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affecter des Tâches</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General styles */
+        body, html {
+
+
+
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #333;
+            padding: 10px;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            color: white;
+            font-size: 24px;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+        }
+
+        nav1 {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav1 ul1 {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav1 ul1 li1 {
+            margin: 0 15px;
+        }
+
+        nav1 ul1 li1 a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        nav1 ul1 li1 a:hover {
+            color: #ddd;
+        }
+
+        /* Main content styles */
+        h1, h2 {
+            margin: 20px 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background-color: white;
+            margin: 5px auto;
+            padding: 8px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        /* Button styles */
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 3px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 2px;
+            transition: background-color 0.3s;
+        }
+
+        button[name="omettre"] {
+            background-color: #dc3545;
+        }
+
+        button[name="omettre"]:hover {
+            background-color: #c82333;
+        }
+
+        button[name="affecter"] {
+            background-color: #28a745;
+        }
+
+        button[name="affecter"]:hover {
+            background-color: #218838;
+        }
+
+        form {
+            display: inline;
+        }
+
+        form label {
+            display: block;
+            margin: 2px 0;
+        }
+
+        .toggle-form-container {
+            margin: 10px 0;
+        }
+
+        /* Link styles */
+        a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin: 20px 0;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        hr {
+            margin: 20px auto;
+            width: 80%;
+            border: 1px solid #ddd;
+        }
+
+        .user-tasks {
+            margin-bottom: 20px;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            nav1 ul1 {
+                display: none;
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                top: 50px;
+                width: 100%;
+                left: 0;
+                z-index: 1;
+            }
+
+            nav1 ul1.show {
+                display: flex;
+            }
+
+            nav1 ul1 li1 {
+                text-align: center;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+
+
+            .logo {
+                display: block;
+
+            }
+
+            /* Main content */
+            li {
+                max-width: 100%;
+
+            }
+
+            .user-tasks {
+                margin: 10px 0;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Mission Manager</div>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+        <nav1>
+            <ul1>
+                <li1><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li1>
+                <li1><a href="#"><i class="fas fa-user"></i> {{ user.nom }}</a></li1>
+                <li1><a href="{% url 'Authentification:logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li1>
+                <li1><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li1>
+            </ul1>
+        </nav1>
+    </header>
+    <main>
+        <h1>Affectation des tâches pour la mission: {{ mission.titre }}</h1>
+
+        {% for entry in utilisateurs_taches %}
+            <div class="user-tasks">
+                <h2>{{ entry.utilisateur.prenom }} {{ entry.utilisateur.nom }} ({{ entry.utilisateur.fonction }})</h2>
+                <ul>
+                    {% for tache in entry.taches %}
+                        <li>
+                            {{ tache.titre }}
+                            <form method="post" action="{% url 'planificationMission:affectation' mission.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="utilisateur_id" value="{{ entry.utilisateur.id }}">
+                                <input type="hidden" name="tache_id" value="{{ tache.id }}">
+                                <button type="submit" name="omettre">Omettre</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="toggle-form-container">
+                    <button name="affecter" onclick="toggleForm('{{ entry.utilisateur.id }}')">Affecter tâche</button>
+                    <form id="form-{{ entry.utilisateur.id }}" method="post" action="{% url 'planificationMission:affectation' mission.id %}" style="display: none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="utilisateur_id" value="{{ entry.utilisateur.id }}">
+                        {% for tache in taches_disponibles %}
+                            <label>
+                                <input type="checkbox" name="taches" value="{{ tache.id }}">
+                                {{ tache.titre }}
+                            </label>
+                        {% endfor %}
+                        <button type="submit" name="affecter">Sauvegarder</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+
+        <a href="#">Retour</a>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mission Manager. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        function toggleForm(utilisateurId) {
+            var form = document.getElementById('form-' + utilisateurId);
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleMenu() {
+            var nav = document.querySelector('nav1 ul1');
+            nav.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>

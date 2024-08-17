@@ -1,0 +1,284 @@
+{%load static%}
+{%if user.is_admin%}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestion des Missions</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h3 {
+            font-size: 24px;
+            color: #555;
+        }
+
+        p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #28a765;
+        }
+
+        a {
+            text-decoration: none;
+            color: #f0f0f0;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        form input[type="text"],
+        form input[type="date"],
+        form textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        form textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        #createMissionForm, #updateMissionForm, #deleteMissionForm {
+            display: none;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+ li {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons button {
+            margin-right: 5px;
+        }
+
+       /* Header styles */
+        header {
+            background-color: #333;
+            padding: 10px;
+            position: relative;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav1 ul1 {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav1 ul1 li1 {
+            margin: 0 15px;
+        }
+
+        nav1 ul1 li1 a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        nav ul1 li1 a:hover {
+            color: #ddd;
+        }
+/* Responsive navigation styles */
+        @media (max-width: 768px) {
+            nav1 ul1 {
+                display: none;
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                top: 50px;
+                width: 100%;
+                left: 0;
+                padding: 10px 0;
+                z-index: 1;
+            }
+
+            nav1 ul1 li1 {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            nav1 ul1.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: white;
+                font-size: 24px;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+
+    </style>
+    <script>
+        function toggleMenu() {
+            var nav = document.querySelector('nav1 ul1');
+            nav.classList.toggle('show');
+        }
+
+        function toggleForm(formId) {
+            var form = document.getElementById(formId);
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        function fillUpdateForm(missionId, titre, dateDebut, datefin, description) {
+            document.getElementById('update-mission-id').value = missionId;
+            document.getElementById('update-titre').value = titre;
+            document.getElementById('update-dateDebut').value = dateDebut;
+            document.getElementById('update-datefin').value = datefin;
+            document.getElementById('update-description').value = description;
+            toggleForm('updateMissionForm');
+        }
+
+        function confirmDelete(missionId) {
+            document.getElementById('delete-mission-id').value = missionId;
+            toggleForm('deleteMissionForm');
+        }
+    </script>
+</head>
+<body>
+
+   <header>
+        <div class="logo">Mission Manager</div>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+        <nav1>
+            <ul1>
+                <li1><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li1>
+                                <li1><a href="{% url 'planificationMission:missions' %}"><i class="fas fa-tasks"></i> gestion Missions</a></li1>
+
+                <li1><a href="{% url 'planificationMission:utilisateur_missions' %}"><i class="fas fa-clipboard-list"></i> Mes Tâches</a></li1>
+                <li1><a href="#"><i class="fas fa-user"></i> {{user.nom}}</a></li1>
+                <li1><a href="{% url 'Authentification:logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li1>
+                <li1><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li1>
+            </ul1>
+        </nav1>
+    </header>
+
+
+
+
+    <h1>Liste des Missions</h1>
+
+    <button onclick="toggleForm('createMissionForm')">Créer une Mission</button>
+    <div id="createMissionForm">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" name="create">Sauvegarder</button>
+        </form>
+    </div>
+
+    {% if missions %}
+        <ul>
+            {% for mission in missions %}
+                <li>
+                    <h3>{{ mission.titre }}</h3>
+                    <p>{{ mission.description }}</p>
+                    <button ><a href="{% url 'planificationMission:evaluer_tache_view' mission.id %}">Evaluer</a></button>
+                    <button ><a href="{% url 'planificationMission:diagramme_gantt' mission.id %}">Gantt</a></button>
+                    <button><a href="{% url 'planificationMission:tache_list' mission.id %}">Tâches</a></button>
+                    <button><a href="{% url 'planificationMission:ressourcesMission_list' mission.id %}">Ressources</a></button>
+                    <button><a href="{% url 'planificationMission:objectif' mission.id %}">Objectifs</a></button>
+                    <button><a href="{% url 'planificationMission:generate_pdf' mission.id %}" class="btn">Télécharger Rapport</a>
+                    <button onclick="fillUpdateForm('{{ mission.id }}', '{{ mission.titre }}', '{{ mission.dateDebut }}', '{{ mission.datefin }}', '{{ mission.description }}')">Modifier</button>
+                    <button onclick="confirmDelete('{{ mission.id }}')">Supprimer</button>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune mission n'est disponible.</p>
+    {% endif %}
+
+    <div id="updateMissionForm">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" id="update-mission-id" name="mission_id">
+            <input type="text" id="update-titre" name="titre" placeholder="Titre">
+            <input type="date" id="update-dateDebut" name="dateDebut" >
+            <input type="date" id="update-datefin" name="datefin">
+            <textarea id="update-description" name="description" placeholder="Description"></textarea>
+            <button type="submit" name="update">Mettre à jour</button>
+        </form>
+    </div>
+
+    <div id="deleteMissionForm">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" id="delete-mission-id" name="mission_id">
+            <p>Êtes-vous sûr de vouloir supprimer cette mission ?</p>
+            <button type="submit" name="delete">Supprimer</button>
+        </form>
+    </div>
+</body>
+</html>
+{%else%}
+
+    <script>
+        window.location.href = "{% url 'Authentification:home' %}";
+    </script>
+
+{%endif%}

@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Application</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+ <style>
+
+        /* Notification Icon Styles */
+.notification-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-icon a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+}
+
+.notification-icon .notification-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        div {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+     /* Header styles */
+        header {
+            background-color: #333;
+            padding: 10px;
+            position: relative;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #333;
+        }
+
+        nav1 ul1 {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav1 ul1 li1 {
+            margin: 0 15px;
+        }
+
+        nav1 ul1 li1 a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+        }
+
+
+/* Responsive navigation styles */
+        @media (max-width: 768px) {
+            nav1 ul1 {
+                display: none;
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                top: 50px;
+                width: 100%;
+                left: 0;
+                padding: 10px 0;
+                z-index: 1;
+            }
+
+            nav1 ul1 li1 {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            nav1 ul1.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: white;
+                font-size: 24px;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+   <header>
+        <div1 class="logo">Mission Manager</div1>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+        <nav1>
+            <ul1>
+                <li1><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li1>
+                <li1><a href="{% url 'planificationMission:utilisateur_missions' %}"><i class="fas fa-clipboard-list"></i> Mes Tâches</a></li1>
+                <li1><a href="#"><i class="fas fa-user"></i> {{user.nom}}</a></li1>
+                <li1><a href="{% url 'Authentification:logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li1>
+                <li1><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li1>
+                <li1>
+                             <div2 class="notification-icon">
+                                <a href="{% url 'planificationMission:notifications' %}">
+                                        <i class="fas fa-envelope"></i> Notifications
+                                                     </a>
+                            {% if notifications_non_lues_count > 0 %}
+                                 <span class="notification-count">{{ notifications_non_lues_count }}</span>
+                                     {% endif %}
+    </div2>
+</li1>
+            </ul1>
+        </nav1>
+    </header>
+    <h1>Liste des Tâches</h1>
+
+    {% if taches %}
+        {% for tache in taches %}
+            <div>
+                <h3>{{ tache.titre }}</h3>
+                <p>{{ tache.description }}</p>
+                <p>Échéance : {{ tache.dateEcheance }}</p>
+                <p>État :
+                    {% if tache.etat == 1 %}
+                        En attente
+                    {% elif tache.etat == 2 %}
+                        En cours
+                    {% elif tache.etat == 3 %}
+                        Terminé
+                    {% endif %}
+                </p>
+                {% if tache.ressources.all %}
+                <h4>Ressources :</h4>
+                <ul>
+                    {% for ressource in tache.ressources.all %}
+                        <li>{{ ressource.titre }} - {{ ressource.prix }} Fcfa</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucune ressource associée.</p>
+            {% endif %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="tache_id" value="{{ tache.id }}">
+
+                    {% if tache.etat == 1 %}
+                        <button type="submit" name="action" value="start">Commencer</button>
+                    {% elif tache.etat == 2 %}
+                        <input type="file" name="pdf_file" required>
+                        <button type="submit" name="action" value="finish">Finie</button>
+                    {% elif tache.etat == 3 %}
+                        <button type="button" disabled>Terminé</button>
+                    {% endif %}
+                </form>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>Aucune tâche assignée.</p>
+    {% endif %}
+
+
+</body>
+<script>
+
+        function toggleMenu() {
+            var nav = document.querySelector('nav1 ul1');
+            nav.classList.toggle('show');
+        }
+     </script>
+</html>

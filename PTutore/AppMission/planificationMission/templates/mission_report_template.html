@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport de Mission</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { text-align: center; }
+        h2 { margin-top: 30px; }
+        p { line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid black; }
+        th, td { padding: 10px; text-align: left; }
+
+        /* Additional CSS for better presentation */
+        .task-table th, .task-table td { text-align: center; }
+        .task-table th { background-color: #f2f2f2; }
+        .task-status {
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .status-1 { background-color: #ffcccb; } /* Non débutée */
+        .status-2 { background-color: #ffffcc; } /* En cours */
+        .status-3 { background-color: #ccffcc; } /* Terminée */
+    </style>
+</head>
+<body>
+    <h1>Rapport de Mission</h1>
+    <p>Date: {{ date }}</p>
+    <h2>Titre: {{ mission.titre }}</h2>
+    <p>Description: {{ mission.description }}</p>
+    <p>Date de début: {{ mission.dateDebut }}</p>
+    <p>Date de fin: {{ mission.datefin }}</p>
+
+    <h2>Objectifs</h2>
+    <ul>
+        {% for objectif in objectifs %}
+            <li>{{ objectif.titre }}: {{ objectif.description }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Tâches</h2>
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>Nom de l'utilisateur</th>
+                <th>Tâche</th>
+                <th>Description</th>
+                <th>État</th>
+                <th>Date de fin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tache in taches %}
+            <tr>
+                <td>{{ tache.utilisateur.nom }} {{ tache.utilisateur.prenom }}<br>{{ tache.utilisateur.email }}</td>
+                <td>{{ tache.titre }}</td>
+                <td>{{ tache.description }}</td>
+                <td>
+                    <span class="task-status status-{{ tache.etat }}">
+                        {% if tache.etat == 1 %} Non débutée {% endif %}
+                        {% if tache.etat == 2 %} En cours {% endif %}
+                        {% if tache.etat == 3 %} Terminée {% endif %}
+                    </span>
+                </td>
+                <td>{% if tache.etat == 3 %}{{ tache.dateFin }}{% else %}-{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Ressources</h2>
+    <ul>
+        {% for ressource in ressources %}
+            <li>{{ ressource.tache.titre }}_{{ ressource.titre }}: {{ ressource.description }} - Prix: {{ ressource.prix }}</li>
+        {% endfor %}
+    </ul>
+
+
+
+</body>
+</html>

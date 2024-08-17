@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Gestion de Missions</title>
+
+    <style>
+        /* General Styles */
+
+
+        header, .hero, footer {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Header */
+        header {
+            background-color: #333;
+            padding: 10px;
+            color: #fff;
+            position: relative;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav1 ul1 {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav1 ul1 li1 {
+            margin: 0 15px;
+        }
+
+        nav1 ul1 li1 a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        nav1 ul1 li1 a:hover {
+            color: #ddd;
+        }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: white;
+                font-size: 24px;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+            }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2b5876, #4e4376); /* Deep blue to muted purple gradient */
+            height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Button Styles */
+        .btn {
+            background: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            transition: background 0.3s ease;
+            display: inline-block;
+            margin-top: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        .btn:hover {
+            background: #218838;
+        }
+
+        /* Bounce Animation */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+
+        .features, .testimonials {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .feature, .testimonial {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .feature-icon, .testimonial-icon {
+            font-size: 48px;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .testimonial-content {
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .footer-content p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header, .hero, footer {
+                padding: 10px; /* Adjust padding for smaller screens */
+            }
+
+            .hero-content h1 {
+                font-size: 36px; /* Smaller font size for smaller screens */
+            }
+
+            .hero-content p {
+                font-size: 18px; /* Smaller font size for smaller screens */
+            }
+
+
+                nav1 ul1 {
+                display: none;
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                top: 50px;
+                width: 100%;
+                left: 0;
+                padding: 10px 0;
+                z-index: 1;
+            }
+
+            nav1 ul1 li1 {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            nav1 ul1.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: white;
+                font-size: 24px;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+            .footer-content {
+                font-size: 12px; /* Smaller font size for the footer on small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Mission Manager</div>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+
+        {% if user.is_authenticated %}
+        <nav1>
+            <ul1>
+                <li1><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li1>
+                {% if user.is_admin %}
+                <li1><a href="{% url 'planificationMission:missions' %}"><i class="fas fa-tasks"></i> gestion Missions</a></li1>
+                {% endif %}
+                <li1><a href="{% url 'planificationMission:utilisateur_missions' %}"><i class="fas fa-clipboard-list"></i> Mes Tâches</a></li1>
+                <li1><a href="#"><i class="fas fa-user"></i> {{ user.nom }}</a></li1>
+                <li1><a href="{% url 'Authentification:logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li1>
+                <li1><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li1>
+            </ul1>
+        </nav1>
+        {% else %}
+        <nav1>
+            <ul1>
+                <li1><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li1>
+                <li1><a href="{% url 'Authentification:login' %}"><i class="fas fa-sign-in-alt"></i> Se Connecter</a></li1>
+                <li1><a href="{% url 'Authentification:register' %}"><i class="fas fa-user-plus"></i> S'inscrire</a></li1>
+                <li1><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li1>
+            </ul1>
+        </nav1>
+        {% endif %}
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Bienvenue sur Mission Manager</h1>
+                <p>Gérez vos missions et tâches de manière efficace.</p>
+                {% if user.is_authenticated%}
+                <a href="{% url 'planificationMission:utilisateur_missions' %}" class="btn">Commencer</a>
+                {% else %}
+                <a href="{% url 'Authentification:login' %}" class="btn">Commencer</a>
+
+                {% endif %}
+            </div>
+        </section>s
+
+        <section class="section features">
+            <h2 class="section-title">Fonctionnalités</h2>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <h3>Tableau de Bord</h3>
+                <p>Suivez l'avancement de vos missions en temps réel.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-calendar-alt"></i></div>
+                <h3>Planification</h3>
+                <p>Planifiez vos tâches et missions avec des outils intuitifs.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-bell"></i></div>
+                <h3>Notifications</h3>
+                <p>Recevez des alertes pour ne rien manquer.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Mission Manager. Tous droits réservés.</p>
+            <p>BURKINA FASO / BOBO DIOULASSO</p>
+            <p>Email : djangoproject430@gmail.com</p>
+        </div>
+    </footer>
+
+   <script>
+        function toggleMenu() {
+            var nav = document.querySelector('nav1 ul1');
+            nav.classList.toggle('show');
+        }
+    </script>
+</html>

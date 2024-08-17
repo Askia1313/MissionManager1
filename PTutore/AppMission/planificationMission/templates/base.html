@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mon Application{% endblock %}</title>
+    <link rel="stylesheet" href="##">
+    {% block extra_head %}
+    <!-- Vous pouvez ajouter des balises supplémentaires ici -->
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <a href="##">Logo</a>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="##">Sujets</a></li>
+                    <li><a href="##">Cours</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                {% if user.is_authenticated %}
+                    <div class="user-icon">
+                        <img src="#" alt="User Icon">
+                        <div class="user-dropdown">
+                            <p>{{ user.username }}</p>
+                            <a href="#">Éditer Profil</a>
+                            <a href="#">Déconnexion</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="#">Connexion</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            {% block content %}
+            <!-- Contenu principal -->
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <p>Développé par Group Alpha</p>
+    </footer>
+
+    
+    {% block extra_js %}
+    <!-- Vous pouvez ajouter des scripts supplémentaires ici -->
+    {% endblock %}
+</body>
+</html>

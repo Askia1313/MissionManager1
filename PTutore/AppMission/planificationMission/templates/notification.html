@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Notifications</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .notifications-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.notification-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notification-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.notification-item.non-lue {
+    background-color: #f9f9f9; /* Couleur différente pour les notifications non lues */
+}
+
+.notification-item h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.notification-item p {
+    margin: 5px 0;
+
+}
+.notification-item form {
+    margin-top: 10px;
+}
+
+.notification-item button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+
+        /* Notification Icon Styles */
+.notification-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-icon a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+}
+
+.notification-icon .notification-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.notification-item button:hover {
+    background-color: #0056b3;
+}
+     header {
+            background-color: #333;
+            padding: 10px;
+            position: relative;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav1 ul1 {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav1 ul1 li1 {
+            margin: 0 15px;
+        }
+
+        nav1 ul1 li1 a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        nav ul1 li1 a:hover {
+            color: #ddd;
+        }
+/* Responsive navigation styles */
+        @media (max-width: 768px) {
+            nav1 ul1 {
+                display: none;
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                top: 50px;
+                width: 100%;
+                left: 0;
+                padding: 10px 0;
+                z-index: 1;
+            }
+
+            nav1 ul1 li1 {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            nav1 ul1.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: white;
+                font-size: 24px;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="##"> <!-- Ajouter le chemin vers votre CSS -->
+</head>
+<body>
+
+
+   <header>
+        <div1 class="logo">Mission Manager</div1>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div>
+        <nav1>
+            <ul1>
+                <li1><a href="{% url 'Authentification:home' %}"><i class="fas fa-home"></i> Home</a></li1>
+                <li1><a href="{% url 'planificationMission:utilisateur_missions' %}"><i class="fas fa-clipboard-list"></i> Mes Tâches</a></li1>
+                <li1><a href="#"><i class="fas fa-user"></i> {{user.nom}}</a></li1>
+                <li1><a href="{% url 'Authentification:logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li1>
+                <li1><a href="{% url 'Authentification:A_propos' %}"><i class="fas fa-info-circle"></i> À propos</a></li1>
+                <li1>
+                             <div2 class="notification-icon">
+                                <a href="{% url 'planificationMission:notifications' %}">
+                                        <i class="fas fa-envelope"></i> Notifications
+                                                     </a>
+                            {% if notifications_non_lues_count > 0 %}
+                                 <span class="notification-count">{{ notifications_non_lues_count }}</span>
+                                     {% endif %}
+    </div2>
+</li1>
+            </ul1>
+        </nav1>
+    </header>
+
+
+
+
+        <h1>Mes Notifications</h1>
+
+
+    <main>
+        <div class="notifications-container">
+            {% if notifications.exists %}
+                <ul class="notification-list">
+                    {% for notification in notifications %}
+
+                        <li class="notification-item {% if not notification.est_lu %}non-lue{% endif %}">
+                            <h3>{{ notification.tache.mission.titre }}</h3>
+                            <p>Date : {{ notification.date_creation|date:"d/m/Y" }}</p>
+                            <p>Tâche : {{ notification.tache.titre }}</p>
+                            <p>Message : {{ notification.messages }}</p>
+                            {% if notification.tache.dateFin %}
+                                <p>Note obtenue : {{ notification.tache.evaluations.first.note }}</p>
+                            {% endif %}
+                            {% if not notification.est_lu %}
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                                <button type="submit">Vue</button>
+                            </form>
+                            {% else %}
+                            <button  style="background-color: black">deja lu</button>
+                            {% endif %}
+
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Vous n'avez aucune notification.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        <p>Développé par Group Alpha</p>
+    </footer>
+
+</body>
+<script>
+
+        function toggleMenu() {
+            var nav = document.querySelector('nav1 ul1');
+            nav.classList.toggle('show');
+        }
+     </script>
+</html>
